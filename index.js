@@ -24,10 +24,13 @@ app.get("/", (req, res) => {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
 
     const database = client.db("Community-cleanliness");
     const issuesCollection = database.collection("issues");
+    const userCollection = database.collection("users");
+
+    //issues api
 
     app.get("/issues", async (req, res) => {
       const cursor = issuesCollection.find();
@@ -39,6 +42,18 @@ async function run() {
       const issue = req.body;
       const results = await issuesCollection.insertOne(issue);
       res.send(results);
+    });
+
+    //users api
+    app.post("user", async (req, res) => {
+      const user = req.body;
+      const email = req.body.email;
+      const query = { email: email };
+      const existingUser = await userCollection.findOne(query);
+      if (!existingUser) {
+        const results = await userCollection.insertOne(user);
+        res.send(results);
+      }
     });
 
     // await client.db("admin").command({ ping: 1 });
