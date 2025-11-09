@@ -33,7 +33,12 @@ async function run() {
     //issues api
 
     app.get("/issues", async (req, res) => {
-      const cursor = issuesCollection.find();
+      const email = req.query.email;
+      const query = {};
+      if (email) {
+        query.email = email;
+      }
+      const cursor = issuesCollection.find(query);
       const issues = await cursor.toArray();
       res.send(issues);
     });
@@ -45,7 +50,7 @@ async function run() {
     });
 
     //users api
-    app.post("user", async (req, res) => {
+    app.post("/user", async (req, res) => {
       const user = req.body;
       const email = req.body.email;
       const query = { email: email };
