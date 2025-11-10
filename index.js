@@ -48,11 +48,10 @@ async function run() {
       const results = await issuesCollection.insertOne(issue);
       res.send(results);
     });
-    app.patch("/issues/:id", async (req, rse) => {
+
+    app.patch("/issues/:id", async (req, res) => {
       const id = req.params.id;
       const updateIssue = req.body;
-      console.log(updateIssue);
-
       const query = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
@@ -71,6 +70,13 @@ async function run() {
         updateDoc,
         option
       );
+      res.send(results);
+    });
+
+    app.delete("/issues/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const results = await issuesCollection.deleteOne(query);
       res.send(results);
     });
 
