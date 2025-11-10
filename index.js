@@ -29,6 +29,7 @@ async function run() {
     const database = client.db("Community-cleanliness");
     const issuesCollection = database.collection("issues");
     const userCollection = database.collection("users");
+    const contributionCollection = database.collection("contribution");
 
     //issues api
 
@@ -78,6 +79,24 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const results = await issuesCollection.deleteOne(query);
       res.send(results);
+    });
+
+    // contribution
+    app.post("/contribution", async (req, res) => {
+      const contribution = req.body;
+      const results = await contributionCollection.insertOne(contribution);
+      res.send(results);
+    });
+
+    app.get("/contribution", async (req, res) => {
+      const email = res.query.email;
+      const query = {};
+      if (email) {
+        query.email = email;
+      }
+      const cursor = contributionCollection.find(query)
+      const results= await cursor.toArray()
+      res.send(results)
     });
 
     //users api
