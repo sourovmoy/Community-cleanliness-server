@@ -89,14 +89,14 @@ async function run() {
     });
 
     app.get("/contribution", async (req, res) => {
-      const email = res.query.email;
+      const email = req.query.email;
       const query = {};
       if (email) {
         query.email = email;
       }
-      const cursor = contributionCollection.find(query)
-      const results= await cursor.toArray()
-      res.send(results)
+      const cursor = contributionCollection.find(query);
+      const results = await cursor.toArray();
+      res.send(results);
     });
 
     //users api
