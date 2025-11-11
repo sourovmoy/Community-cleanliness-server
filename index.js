@@ -42,7 +42,7 @@ async function run() {
       const issues = await cursor.toArray();
       res.send(issues);
     });
-    app.get("/issues", async (req, res) => {
+    app.get("/recent-issues", async (req, res) => {
       const cursor = issuesCollection.find().sort({ date: -1 }).limit(6);
       const results = await cursor.toArray;
       res.send(results);
