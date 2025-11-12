@@ -34,17 +34,39 @@ async function run() {
 
     app.get("/issues", async (req, res) => {
       const email = req.query.email;
+      const category = req.query.category;
+      const status = req.query.status;
+      const { search } = req.query;
+
       const query = {};
       if (email) {
         query.email = email;
       }
+      if (category) {
+        query.category = category;
+      }
+      if (search) {
+        query.title = { $regex: search, $options: "i" };
+      }
+      if (status) {
+        query.status = status;
+      }
+
       const cursor = issuesCollection.find(query);
       const issues = await cursor.toArray();
       res.send(issues);
     });
+
+    app.get("/issues/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const results = await issuesCollection.findOne(query);
+      res.send(results);
+    });
+
     app.get("/recent-issues", async (req, res) => {
       const cursor = issuesCollection.find().sort({ date: -1 }).limit(6);
-      const results = await cursor.toArray;
+      const results = await cursor.toArray();
       res.send(results);
     });
 
@@ -89,6 +111,14 @@ async function run() {
     app.post("/contribution", async (req, res) => {
       const contribution = req.body;
       const results = await contributionCollection.insertOne(contribution);
+      res.send(results);
+    });
+
+    app.get("/issues/contribution/:issueId", async (req, res) => {
+      const id = req.params.issueId;
+      const query = { issue: id };
+      const cursor = contributionCollection.find(query);
+      const results = await cursor.toArray();
       res.send(results);
     });
 
