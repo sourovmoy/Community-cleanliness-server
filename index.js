@@ -36,7 +36,7 @@ async function run() {
       const email = req.query.email;
       const category = req.query.category;
       const status = req.query.status;
-      const { search } = req.query;
+      const { search, skip = 0, limit = 12 } = req.query;
 
       const query = {};
       if (email) {
@@ -52,7 +52,10 @@ async function run() {
         query.status = status;
       }
 
-      const cursor = issuesCollection.find(query);
+      const cursor = issuesCollection
+        .find(query)
+        .skip(Number(skip))
+        .limit(Number(limit));
       const issues = await cursor.toArray();
       res.send(issues);
     });
